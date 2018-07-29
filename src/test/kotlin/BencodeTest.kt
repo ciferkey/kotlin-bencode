@@ -11,39 +11,51 @@ import java.math.BigInteger
 class BencodeTest {
 
     @Test
-    fun testDecodeString() {
-        val result = decode("4:spam")
-        assertEquals(BencodeString("spam"), result.get())
+    fun testDecodeAndEncodeString() {
+        val input = "4:spam"
+        val decoded = decode(input)
+        assertEquals(BencodeString("spam"), decoded.get())
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
     }
 
     @Test
-    fun testDecodeInteger() {
-        val result = decode("i3e")
-        assertEquals(BencodeInteger(BigInteger("3")), result.get())
+    fun testDecodeAndEncodeInteger() {
+        val input = "i3e"
+        val decoded = decode(input)
+        assertEquals(BencodeInteger(BigInteger("3")), decoded.get())
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
     }
 
     @Test
-    fun testDecodeList() {
-        val result = decode("l4:spam4:eggse")
+    fun testDecodeAndEncodeList() {
+        val input = "l4:spam4:eggse"
+        val decoded = decode(input)
 
         val expected = BencodeList(mutableListOf(
                 BencodeString("spam"),
                 BencodeString("eggs")
         ))
 
-        assertEquals(expected, result.get())
+        assertEquals(expected, decoded.get())
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
     }
 
     @Test
-    fun testDecodeDict() {
-        val result = decode("d3:cow3:moo4:spam4:eggse")
+    fun testDecodeAndEncodeDict() {
+        val input = "d3:cow3:moo4:spam4:eggse"
+        val decoded = decode(input)
 
         val expected = BencodeDict(mutableMapOf(
                 Pair(BencodeString("cow"), BencodeString("moo")),
                 Pair(BencodeString("spam"), BencodeString("eggs"))
         ))
 
-        assertEquals(expected, result.get())
+        assertEquals(expected, decoded.get())
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
     }
 
     @Test
@@ -59,11 +71,22 @@ class BencodeTest {
     }
 
     @Test
-    fun testDecodeAliceFile() {
+    fun testDecodeAndEncodeAliceFile() {
 
-        val s = File("src/test/resources/alice.torrent").readText(Charsets.US_ASCII)
+        val input = File("src/test/resources/alice.torrent").readText(Charsets.US_ASCII)
 
-        val result = decode(s)
-        println(result)
+        val decoded = decode(input)
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
+    }
+
+    @Test
+    fun testDecodeAndEncodeBunnyFile() {
+
+        val input = File("src/test/resources/bunny.torrent").readText(Charsets.US_ASCII)
+
+        val decoded = decode(input)
+//        val encoded = decoded.get().encode()
+//        assertEquals(input, encoded)
     }
 }

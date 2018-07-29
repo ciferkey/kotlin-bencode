@@ -14,20 +14,20 @@ sealed class Bencode {
 
 data class BencodeString(val s: String) : Bencode() {
     override fun encode(): String {
-        return s.length.toString() + s
+        return s.length.toString() + SEPERATOR + s
     }
 }
 
 data class BencodeInteger(val i: BigInteger) : Bencode() {
     override fun encode(): String {
-        return LIST_MARKER + i.toString() + TERMINATOR
+        return INTEGER_MARKER + i.toString() + TERMINATOR
     }
 }
 
 data class BencodeList(val l: List<Bencode>) : Bencode() {
     override fun encode(): String {
         return l.map { it.encode() }
-                .joinToString(SEPERATOR.toString(),
+                .joinToString("",
                         prefix = LIST_MARKER.toString(),
                         postfix = TERMINATOR.toString()
                 )
@@ -36,9 +36,9 @@ data class BencodeList(val l: List<Bencode>) : Bencode() {
 
 data class BencodeDict(val d: Map<Bencode, Bencode>) : Bencode() {
     override fun encode(): String {
-        return d.entries.map { it.key.encode() + ":" + it.value.encode() }
-                .joinToString(SEPERATOR.toString(),
-                        prefix = LIST_MARKER.toString(),
+        return d.entries.map { it.key.encode() + it.value.encode() }
+                .joinToString("",
+                        prefix = DICT_MARKER.toString(),
                         postfix = TERMINATOR.toString()
                 )
     }
