@@ -59,9 +59,9 @@ class BencodeTest {
     }
 
     @Test
-    fun testDecodeFile() {
+    fun testDecodeAliceFile() {
 
-        val s = File("src/test/resources/alice.torrent").readText(Charsets.UTF_8)
+        val s = File("src/test/resources/alice.torrent").readText(Charsets.US_ASCII)
 
         val result = decode(s)
         println(result)
