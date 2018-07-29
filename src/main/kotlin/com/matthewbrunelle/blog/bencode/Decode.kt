@@ -5,12 +5,6 @@ import com.google.common.collect.Iterators
 import com.google.common.collect.PeekingIterator
 import kotlin.reflect.KFunction1
 
-const val LIST_MARKER = 'l'
-const val INTEGER_MARKER = 'i'
-const val DICT_MARKER = 'd'
-const val TERMINATOR = 'e'
-const val SEPERATOR = ':'
-
 class DecodeException(s: String) : Exception(s)
 
 fun decode(s: String): Result<Bencode, Exception> {
