@@ -1,0 +1,1 @@
+[Blog post](http://blog.matthewbrunelle.com/projects/2018/07/29/kotlin-bencode.html) detailing project available.
