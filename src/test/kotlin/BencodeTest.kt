@@ -11,9 +11,18 @@ import java.math.BigInteger
 class BencodeTest {
 
     @Test
+    fun testDecodeAndEncodeZeroLengthString() {
+        val input = "0:"
+        val decoded = Decoder(input).decode()
+        assertEquals(BencodeString(""), decoded.get())
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
+    }
+
+    @Test
     fun testDecodeAndEncodeString() {
         val input = "4:spam"
-        val decoded = decode(input)
+        val decoded = Decoder(input).decode()
         assertEquals(BencodeString("spam"), decoded.get())
         val encoded = decoded.get().encode()
         assertEquals(input, encoded)
@@ -22,16 +31,23 @@ class BencodeTest {
     @Test
     fun testDecodeAndEncodeInteger() {
         val input = "i3e"
-        val decoded = decode(input)
+        val decoded = Decoder(input).decode()
         assertEquals(BencodeInteger(BigInteger("3")), decoded.get())
         val encoded = decoded.get().encode()
         assertEquals(input, encoded)
     }
 
     @Test
+    fun testDecodeIntegerNumberFormatException() {
+        val input = "iae"
+        val decoded = Decoder(input).decode()
+        assertTrue(decoded.component2() is NumberFormatException)
+    }
+
+    @Test
     fun testDecodeAndEncodeList() {
         val input = "l4:spam4:eggse"
-        val decoded = decode(input)
+        val decoded = Decoder(input).decode()
 
         val expected = BencodeList(mutableListOf(
                 BencodeString("spam"),
@@ -46,7 +62,7 @@ class BencodeTest {
     @Test
     fun testDecodeAndEncodeDict() {
         val input = "d3:cow3:moo4:spam4:eggse"
-        val decoded = decode(input)
+        val decoded = Decoder(input).decode()
 
         val expected = BencodeDict(mutableMapOf(
                 Pair(BencodeString("cow"), BencodeString("moo")),
@@ -60,13 +76,13 @@ class BencodeTest {
 
     @Test
     fun testDecodeEmpty() {
-        val result = decode("")
+        val result = Decoder("").decode()
         assertTrue(result is Result.Failure)
     }
 
     @Test
     fun testDecodeUnknownMarker() {
-        val result = decode("t")
+        val result = Decoder("t").decode()
         assertTrue(result is Result.Failure)
     }
 
@@ -75,7 +91,7 @@ class BencodeTest {
 
         val input = File("src/test/resources/alice.torrent").readText(Charsets.US_ASCII)
 
-        val decoded = decode(input)
+        val decoded = Decoder(input).decode()
         val encoded = decoded.get().encode()
         assertEquals(input, encoded)
     }
@@ -85,8 +101,8 @@ class BencodeTest {
 
         val input = File("src/test/resources/bunny.torrent").readText(Charsets.US_ASCII)
 
-        val decoded = decode(input)
-//        val encoded = decoded.get().encode()
-//        assertEquals(input, encoded)
+        val decoded = Decoder(input).decode()
+        val encoded = decoded.get().encode()
+        assertEquals(input, encoded)
     }
 }

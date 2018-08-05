@@ -6,7 +6,7 @@ const val LIST_MARKER = 'l'
 const val INTEGER_MARKER = 'i'
 const val DICT_MARKER = 'd'
 const val TERMINATOR = 'e'
-const val SEPERATOR = ':'
+const val SEPARATOR = ':'
 
 sealed class Bencode {
     abstract fun encode(): String
@@ -14,7 +14,7 @@ sealed class Bencode {
 
 data class BencodeString(val s: String) : Bencode() {
     override fun encode(): String {
-        return s.length.toString() + SEPERATOR + s
+        return s.length.toString() + SEPARATOR + s
     }
 }
 
@@ -24,7 +24,7 @@ data class BencodeInteger(val i: BigInteger) : Bencode() {
     }
 }
 
-data class BencodeList(val l: List<Bencode>) : Bencode() {
+data class BencodeList(val l: MutableList<Bencode>) : Bencode() {
     override fun encode(): String {
         return l.map { it.encode() }
                 .joinToString("",
